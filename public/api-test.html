@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API连接测试</h1>
+        <div>
+            <input type="text" id="apiUrl" placeholder="请输入API地址" style="width: 300px;">
+            <button onclick="testApi()">测试连接</button>
+            <button onclick="clearResults()">清空结果</button>
+        </div>
+        <div>
+            <h3>预设API地址:</h3>
+            <button onclick="setApiUrl('https://api.aiqinghaiwork.cn')">站点1</button>
+            <button onclick="setApiUrl('https://so.252035.xyz')">站点2</button>
+            <button onclick="setApiUrl('https://sou.makifx.com')">站点3</button>
+            <button onclick="setApiUrl('https://pan.embyserver.dpdns.org:16666')">站点9</button>
+            <button onclick="setApiUrl('https://pan.ipv4.embyserver.dpdns.org:16666')">站点10</button>
+            <button onclick="setApiUrl('https://pan.ipv6.embyserver.dpdns.org:16666')">站点11</button>
+        </div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // 页面加载时检查localStorage中的API地址
+        window.onload = function() {
+            const customApiUrl = localStorage.getItem('customApiUrl');
+            if (customApiUrl) {
+                document.getElementById('apiUrl').value = customApiUrl;
+            } else {
+                document.getElementById('apiUrl').value = 'https://api.aiqinghaiwork.cn';
+            }
+        };
+
+        function setApiUrl(url) {
+            document.getElementById('apiUrl').value = url;
+        }
+
+        async function testApi() {
+            const apiUrl = document.getElementById('apiUrl').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!apiUrl) {
+                showResult('请输入API地址', 'error');
+                return;
+            }
+
+            try {
+                // 保存API地址到localStorage
+                localStorage.setItem('customApiUrl', apiUrl);
+                
+                // 构建搜索URL
+                const searchUrl = `${apiUrl}/api/search?kw=test`;
+                
+                showResult(`正在测试连接: ${searchUrl}`, 'info');
+                
+                // 发送请求
+                const response = await fetch(searchUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // 获取响应文本
+                const responseText = await response.text();
+                
+                // 尝试解析JSON
+                try {
+                    const jsonData = JSON.parse(responseText);
+                    showResult(`连接成功!\n\n响应状态: ${response.status}\n响应数据:\n${JSON.stringify(jsonData, null, 2)}`, 'success');
+                } catch (parseError) {
+                    // 如果不是JSON格式，直接显示文本
+                    showResult(`连接成功!\n\n响应状态: ${response.status}\n响应内容:\n${responseText}`, 'success');
+                }
+            } catch (error) {
+                showResult(`连接失败!\n\n错误信息: ${error.message}`, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultsDiv = document.getElementById('results');
+            const resultElement = document.createElement('div');
+            resultElement.className = `result ${type}`;
+            resultElement.textContent = message;
+            resultsDiv.appendChild(resultElement);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

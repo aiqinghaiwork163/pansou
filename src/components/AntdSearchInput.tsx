@@ -1,0 +1,218 @@
+import { useState, useEffect, useRef } from 'react';
+import { Input, Button, Dropdown, Menu, Empty, message } from 'antd';
+import { SearchOutlined, HistoryOutlined, DownOutlined, ClearOutlined } from '@ant-design/icons';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
+import { GradientText } from './GradientText';
+
+interface AntdSearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onSearch: (value?: string) => void;
+  disabled?: boolean;
+}
+
+export function AntdSearchInput({ value, onChange, onSearch, disabled = false }: AntdSearchInputProps) {
+  const [localValue, setLocalValue] = useState(value);
+  const [open, setOpen] = useState(false);
+  const searchHistoryHook = useSearchHistory();
+  const { searchHistory, addSearchHistory, removeSearchHistory, clearSearchHistory } = searchHistoryHook;
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+  
+  // 点击外部关闭下拉菜单
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  const handleSubmit = () => {
+    if (localValue.trim()) {
+      addSearchHistory(localValue.trim());
+      onSearch(localValue.trim());
+      setOpen(false);
+    }
+  };
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
+    onChange(newValue);
+    
+    // 在输入框获得焦点时打开下拉菜单（如果有搜索历史）
+    if (searchHistory.length > 0 && !open) {
+      setOpen(true);
+    }
+  };
+  
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && localValue.trim()) {
+      addSearchHistory(localValue.trim());
+      onSearch(localValue.trim());
+      setOpen(false);
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      // 阻止方向键的默认行为，避免影响下拉菜单的导航
+      e.preventDefault();
+    }
+  };
+  
+  const handleHistoryClick = (keyword: string) => {
+    setLocalValue(keyword);
+    onChange(keyword);
+    setOpen(false);
+    // 自动触发搜索
+    setTimeout(() => {
+      onSearch(keyword);
+    }, 100);
+  };
+  
+  const handleHistoryDelete = (e: React.MouseEvent, keyword: string) => {
+    e.stopPropagation();
+    removeSearchHistory(keyword);
+    message.success(`已删除搜索记录: ${keyword}`);
+    
+    // 如果删除后没有搜索历史了，关闭下拉菜单
+    if (searchHistory.length <= 1) {
+      setOpen(false);
+    }
+  };
+  
+  const menu = (
+    <Menu className="w-full">
+      {searchHistory.length > 0 ? (
+        <>
+          <Menu.ItemGroup 
+            title={
+              <div className="flex items-center justify-between px-4 py-2">
+                <span className="flex items-center">
+                  <HistoryOutlined className="mr-2 text-blue-500" />
+                  <GradientText gradient="primary" animate={true}>
+                    搜索历史
+                  </GradientText>
+                </span>
+                <Button 
+                  type="text" 
+                  icon={<ClearOutlined />} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearSearchHistory();
+                    message.success('搜索历史已清空');
+                  }}
+                  size="small"
+                  danger
+                  className="hover:text-red-600"
+                >
+                  清空
+                </Button>
+              </div>
+            }
+          >
+            {searchHistory.map((keyword, index) => (
+              <Menu.Item 
+                key={`${keyword}-${index}`} 
+                className="flex items-center justify-between group px-2 py-1"
+              >
+                <div 
+                  className="truncate group-hover:text-blue-600 font-medium transition-colors duration-100 cursor-pointer flex-1 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+                  onClick={() => handleHistoryClick(keyword)}
+                >
+                  {keyword}
+                </div>
+                <Button 
+                  type="text" 
+                  size="small"
+                  onClick={(e) => handleHistoryDelete(e, keyword)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  danger
+                  aria-label={`删除 ${keyword}`}
+                >
+                  删除
+                </Button>
+              </Menu.Item>
+            ))}
+          </Menu.ItemGroup>
+          <Menu.Item 
+            className="px-4 py-2 text-center text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={() => setOpen(false)}
+          >
+            关闭历史记录
+          </Menu.Item>
+        </>
+      ) : (
+        <div className="p-4">
+          <Empty 
+            description={
+              <div className="text-center text-slate-500">
+                <p className="text-sm font-medium">暂无搜索历史</p>
+                <p className="text-xs text-slate-400 mt-1">开始搜索，创建您的专属记录</p>
+              </div>
+            }
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            className="m-0"
+          />
+        </div>
+      )}
+    </Menu>
+  );
+  
+  return (
+    <div className="w-full max-w-3xl mx-auto relative" ref={dropdownRef}>
+      <div className="flex gap-2">
+        <Dropdown 
+          dropdownRender={() => menu}
+          open={open && (localValue.trim() !== '' || searchHistory.length > 0)}
+          onOpenChange={setOpen}
+          trigger={['click']}
+          placement="bottomCenter"
+          className="flex-1"
+        >
+          <Input
+            value={localValue}
+            onChange={handleChange}
+            onFocus={() => {
+              // 当输入框获得焦点时，如果有搜索历史则显示下拉菜单
+              if (searchHistory.length > 0) {
+                setOpen(true);
+              }
+            }}
+            onKeyDown={handleKeyDown}
+            disabled={disabled}
+            placeholder="🔍 输入关键词，探索无限可能..."
+            size="large"
+            suffix={<DownOutlined className={open ? 'rotate-180' : ''} style={{ transition: 'transform 0.2s' }} />}
+            className="flex-1"
+          />
+        </Dropdown>
+        
+        <Button
+          type="primary"
+          icon={<SearchOutlined />}
+          onClick={() => {
+            if (localValue.trim()) {
+              addSearchHistory(localValue.trim());
+              onSearch(localValue.trim());
+              setOpen(false);
+            } else {
+              message.warning('请输入搜索关键词');
+            }
+          }}
+          disabled={disabled}
+          size="large"
+          className="bg-gradient-to-r from-blue-500 to-indigo-600 border-none shadow-lg hover:shadow-xl transition-all duration-200"
+        >
+          搜索
+        </Button>
+      </div>
+    </div>
+  );
+}
