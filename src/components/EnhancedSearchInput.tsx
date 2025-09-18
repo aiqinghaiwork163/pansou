@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { useSearchHistory } from '@/hooks/useSearchHistory';
+// import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { getNetdiskIcon, getNetdiskColor } from '@/utils/netdiskUtils';
 
 interface EnhancedSearchInputProps {
@@ -14,7 +14,7 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
   const [localValue, setLocalValue] = useState(value);
   const [showHistory, setShowHistory] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const { searchHistory, addSearchHistory, clearSearchHistory, removeSearchHistory } = useSearchHistory();
+  // const { searchHistory, addSearchHistory, clearSearchHistory, removeSearchHistory } = useSearchHistory();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -22,7 +22,8 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
     setLocalValue(value);
   }, [value]);
   
-  // 点击外部关闭下拉菜单
+  // 点击外部关闭下拉菜单 - 已注释掉
+  /*
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -38,14 +39,15 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
+  */
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation(); // 阻止事件冒泡
     if (localValue.trim()) {
-      addSearchHistory(localValue.trim());
+      // addSearchHistory(localValue.trim());
       onSearch();
-      setShowHistory(false);
+      // setShowHistory(false);
     }
     return false; // 确保表单不提交
   };
@@ -59,11 +61,11 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
     if (e.key === 'Enter' && localValue.trim()) {
       e.preventDefault(); // 阻止默认的表单提交行为
       e.stopPropagation(); // 阻止事件冒泡
-      addSearchHistory(localValue.trim());
+      // addSearchHistory(localValue.trim());
       onSearch();
-      setShowHistory(false);
+      // setShowHistory(false);
     } else if (e.key === 'Escape') {
-      setShowHistory(false);
+      // setShowHistory(false);
       inputRef.current?.blur();
     } else if (e.key === 'ArrowDown' && showHistory && searchHistory.length > 0) {
       // 当按下向下箭头键时，如果有历史记录则聚焦到第一个历史记录项
@@ -75,6 +77,8 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
     }
   };
   
+  // 历史搜索相关方法 - 已注释掉
+  /*
   const handleHistoryClick = (keyword: string) => {
     setLocalValue(keyword);
     onChange(keyword);
@@ -88,8 +92,10 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
     e.stopPropagation();
     removeSearchHistory(keyword);
   };
+  */
   
-  // 点击输入框时显示历史记录
+  // 点击输入框时显示历史记录 - 已注释掉
+  /*
   const handleInputFocus = () => {
     setIsFocused(true);
     setShowHistory(true);
@@ -105,11 +111,12 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
       }
     }, 150);
   };
+  */
 
   return (
     <div 
       className="w-full max-w-3xl mx-auto relative" 
-      ref={dropdownRef}
+      // ref={dropdownRef}
     >
       <form 
         onSubmit={handleSubmit} 
@@ -128,8 +135,8 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
             value={localValue}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
+            // onFocus={handleInputFocus}
+          // onBlur={handleInputBlur}
             disabled={disabled}
             placeholder="请输入您要搜索的内容"
             className={cn(
@@ -162,6 +169,8 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
         </div>
       </form>
       
+      {/* 历史搜索下拉菜单 - 已移除 */}
+      {/*
       {showHistory && (
         <div 
           className="absolute top-full left-0 right-0 mt-3 bg-white rounded-xl shadow-xl z-50 max-h-64 overflow-hidden border border-gray-200"
@@ -239,6 +248,7 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
           )}
         </div>
       )}
+      */}
     </div>
   );
 }

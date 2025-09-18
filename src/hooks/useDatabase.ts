@@ -1,3 +1,5 @@
+// 历史搜索功能已移除 - useSearchHistory hook 已注释掉
+/*
 import { useState, useEffect } from 'react'
 import { searchHistoryService, SearchHistory } from '@/lib/supabase'
 
@@ -57,3 +59,4 @@ export const useSearchHistory = () => {
     refreshHistory: loadHistory
   }
 }
+*/

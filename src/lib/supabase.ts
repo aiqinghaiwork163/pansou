@@ -7,6 +7,8 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1N
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 // 数据库表结构类型定义
+// 搜索历史接口 - 已注释掉
+/*
 export interface SearchHistory {
   id?: number
   keyword: string
@@ -15,6 +17,7 @@ export interface SearchHistory {
   created_at?: string
   user_id?: string
 }
+*/
 
 export interface UserSettings {
   id?: number
@@ -52,7 +55,8 @@ export interface AuthorizationCode {
   user?: User
 }
 
-// 搜索历史相关操作
+// 搜索历史相关操作 - 已注释掉
+/*
 export const searchHistoryService = {
   // 添加搜索记录
   async addSearchRecord(keyword: string, resultsCount: number, searchTime: number) {
@@ -122,6 +126,7 @@ export const searchHistoryService = {
     return result
   }
 }
+*/
 
 // 用户设置相关操作
 export const userSettingsService = {
