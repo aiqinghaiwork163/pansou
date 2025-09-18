@@ -174,15 +174,19 @@ export function AntdSearchInput({ value, onChange, onSearch, disabled = false }:
     // 移除历史搜索功能 - 简化组件结构
     <div className="w-full max-w-3xl mx-auto relative">
       <div className="flex gap-2">
-        <Input
-          value={localValue}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          disabled={disabled}
-          placeholder="🔍 输入关键词，探索无限可能..."
-          size="large"
-          className="flex-1"
-        />
+        <div className="relative rounded-full overflow-hidden group flex-1">
+          <Input
+            value={localValue}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            disabled={disabled}
+            placeholder="🔍 输入关键词，探索无限可能..."
+            size="large"
+            className="w-full h-14 rounded-full pl-12 pr-40 shadow-sm border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+          />
+          {/* 渐变边框装饰 */}
+          <div className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-blue-600 to-purple-600 p-[1px] opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 -z-10"></div>
+        </div>
         
         <Button
           type="primary"
@@ -199,7 +203,7 @@ export function AntdSearchInput({ value, onChange, onSearch, disabled = false }:
           }}
           disabled={disabled}
           size="large"
-          className="bg-gradient-to-r from-blue-500 to-indigo-600 border-none shadow-lg hover:shadow-xl transition-all duration-200"
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 border-transparent shadow-md hover:shadow-lg transition-all duration-300"
         >
           搜索
         </Button>
