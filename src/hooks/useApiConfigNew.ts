@@ -27,7 +27,7 @@ export function useApiConfig() {
       if (url) {
         apiConfig.setCustomApiUrl(url);
       } else {
-        apiConfig.resetCustomApiUrl();
+        apiConfig.resetToDefault();
       }
 
       setCustomApiUrl(url);
@@ -46,7 +46,7 @@ export function useApiConfig() {
     setError(null);
     
     try {
-      apiConfig.resetCustomApiUrl();
+      apiConfig.resetToDefault();
       setCustomApiUrl('');
       setIsValidUrl(true);
     } catch (err) {
