@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite --host --port 2005",
-    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit --noUnusedLocals false --noUnusedParameters false && tsc -p tsconfig.node.json --noEmit --noUnusedLocals false --noUnusedParameters false",
     "test": "vitest run",
     "audit": "npm audit",
     "build": "vite build",

@@ -67,7 +67,7 @@ export function EnhancedSearchInput({ value, onChange, onSearch, disabled = fals
     } else if (e.key === 'Escape') {
       // setShowHistory(false);
       inputRef.current?.blur();
-    } else if (e.key === 'ArrowDown' && showHistory && searchHistory.length > 0) {
+    } else if (e.key === 'ArrowDown' && showHistory) {
       // 当按下向下箭头键时，如果有历史记录则聚焦到第一个历史记录项
       e.preventDefault();
       const firstItem = document.querySelector('.search-history-item');

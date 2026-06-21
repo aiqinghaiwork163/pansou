@@ -11,7 +11,7 @@ interface ApiConfigState {
 // API配置钩子返回类型
 interface UseApiConfigReturn {
   config: ApiConfigState;
-  setCustomUrl: (url: string) => void;
+  setCustomUrl: (url: string) => boolean;
   resetToDefault: () => void;
   validateUrl: (url: string) => boolean;
   testConnection: (url: string) => Promise<{ success: boolean; message: string }>;

@@ -7,6 +7,7 @@ import { getNetdiskTypeId } from '@/utils/netdiskTypeUtils';
 import { GlassMorphismModal } from './GlassMorphismModal';
 import { GradientText } from './GradientText';
 import { Modal } from 'antd';
+import { SearchOutlined, StarOutlined } from '@ant-design/icons';
 
 interface SearchResultItem {
   id: string;
@@ -137,7 +138,7 @@ export function SearchResults({
         <div className="w-16 h-16 border-4 border-blue-100 border-t-blue-600 rounded-full mb-6 animate-spin"></div>
         <div className="text-center">
           <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center">
-            <SparklesOutlined className="mr-2 text-blue-600 animate-spin-slow" />
+            <StarOutlined className="mr-2 text-blue-600 animate-spin-slow" />
             正在搜索资源中...
           </h3>
           <p className="text-gray-600 text-sm mb-6">
@@ -381,7 +382,7 @@ export function SearchResults({
               
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-5 max-w-md border border-blue-100 shadow-sm">
                 <h4 className="font-medium text-gray-800 mb-4 flex items-center justify-center">
-                  <SparklesOutlined className="mr-2 text-yellow-500" />
+                  <StarOutlined className="mr-2 text-yellow-500" />
                   搜索建议
                 </h4>
                 <div className="text-sm text-gray-600 space-y-3">
