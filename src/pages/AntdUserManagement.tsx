@@ -4,6 +4,7 @@ import { useUserManagement } from '@/hooks/useUserAuth';
 import { authorizationCodeService, User, AuthorizationCode, passwordUtils, userSettingsService, userService } from '@/lib/supabase';
 import apiConfig from '@/config/apiConfig';
 import DeleteIcon from '@/components/DeleteIcon';
+import { SiteSettingsCard } from '@/components/admin/SiteSettingsCard';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -24,7 +25,6 @@ import {
   Pagination,
   Row,
   Col,
-  Checkbox,
   Typography
 } from 'antd';
 import { 
@@ -726,57 +726,19 @@ const AntdUserManagement: React.FC = () => {
         </TabPane>
         
         <TabPane tab="站点设置" key="3">
-          <Card title="API站点配置">
-            <Form layout="vertical">
-              <Form.Item label="自定义API地址">
-                <Input
-                  value={siteSettings.customApiUrl}
-                  onChange={(e) => setSiteSettings(prev => ({ 
-                    ...prev, 
-                    customApiUrl: e.target.value 
-                  }))}
-                  placeholder="例如: https://api.example.com"
-                  status={!siteSettings.isValidUrl && siteSettings.customApiUrl ? 'error' : ''}
-                />
-                {siteSettings.customApiUrl && !siteSettings.isValidUrl && (
-                  <div className="text-red-500 mt-1">请输入有效的URL地址</div>
-                )}
-              </Form.Item>
-              
-              <Form.Item label="可用站点">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                  {siteSettings.allSites.map(site => (
-                    <Checkbox
-                      key={site}
-                      checked={siteSettings.selectedSites.includes(site)}
-                      onChange={() => toggleSiteSelection(site)}
-                    >
-                      {site}
-                    </Checkbox>
-                  ))}
-                </div>
-              </Form.Item>
-              
-              <Form.Item>
-                <Space>
-                  <Button 
-                    type="primary" 
-                    onClick={saveSiteSettings}
-                    loading={siteSettingsLoading}
-                  >
-                    保存设置
-                  </Button>
-                  <Button onClick={resetSiteSettings}>
-                    重置默认
-                  </Button>
-                </Space>
-              </Form.Item>
-            </Form>
-            
-            {siteSettingsError && (
-              <div className="text-red-500 mt-2">{siteSettingsError}</div>
-            )}
-          </Card>
+          <SiteSettingsCard
+            settings={siteSettings}
+            loading={siteSettingsLoading}
+            error={siteSettingsError}
+            onCustomApiUrlChange={(customApiUrl) => setSiteSettings(prev => ({
+              ...prev,
+              customApiUrl,
+              isValidUrl: customApiUrl ? apiConfig.validateApiUrl(customApiUrl) : true,
+            }))}
+            onToggleSiteSelection={toggleSiteSelection}
+            onSave={saveSiteSettings}
+            onReset={resetSiteSettings}
+          />
         </TabPane>
       </Tabs>
       

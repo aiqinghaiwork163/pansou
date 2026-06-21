@@ -28,7 +28,7 @@ import {
   LogoutOutlined,
   UserOutlined,
   CrownOutlined,
-  SparklesOutlined
+  StarOutlined
 } from '@ant-design/icons';
 import { GradientText } from '@/components/GradientText';
 
@@ -138,7 +138,7 @@ function AntdHome() {
             
             <div className="text-center mb-6 relative z-10">
               <div className="flex items-center justify-center mb-2">
-                <SparklesOutlined className="text-yellow-500 mr-2" />
+                <StarOutlined className="text-yellow-500 mr-2" />
                 <GradientText className="text-3xl font-bold">网盘资源搜索</GradientText>
               </div>
               <Text type="secondary" className="text-lg">输入关键词，探索无限可能</Text>

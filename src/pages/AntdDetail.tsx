@@ -16,14 +16,14 @@ import {
   LinkOutlined,
   FileTextOutlined
 } from '@ant-design/icons';
-import { getNetdiskIcon, getNetdiskColor } from '@/utils/netdiskUtils';
+import { getNetdiskIcon, getNetdiskTypeFromUrl } from '@/utils/netdiskUtils';
 
 const { Title, Text } = Typography;
 
 interface SearchResult {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   url: string;
   content: string;
   netdisk: string;
@@ -43,9 +43,12 @@ export default function AntdDetail() {
       const foundResult = results.find(item => item.id === id);
       
       if (foundResult) {
+        const netdisk = getNetdiskTypeFromUrl(foundResult.url, foundResult.source);
         // 模拟详细内容
         const detailedResult: SearchResult = {
           ...foundResult,
+          description: foundResult.description || foundResult.content || '暂无描述',
+          netdisk,
           content: `
             <h3>详细内容</h3>
             <p>这是"${foundResult.title}"的详细信息页面。</p>
@@ -107,7 +110,7 @@ export default function AntdDetail() {
             <div>
               <Title level={3} className="mb-2">{result.title}</Title>
               <Space className="mb-4">
-                <Tag color={getNetdiskColor(result.netdisk)}>
+                <Tag color="blue">
                   {getNetdiskIcon(result.netdisk)}
                   {result.netdisk}
                 </Tag>

@@ -32,23 +32,37 @@ npm run deploy
 在Cloudflare Pages中设置以下环境变量：
 
 - `VITE_API_URL`: `https://api.aiqinghaiwork.cn`
+- `VITE_SUPABASE_URL`: Supabase 项目 URL
+- `VITE_SUPABASE_ANON_KEY`: Supabase anon public key
 
 ## 本地开发
 
 ```bash
 # 安装依赖
-pnpm install
+npm ci
 
 # 启动开发服务器
-pnpm run dev
+npm run dev
 ```
 
 ## 构建
 
 ```bash
 # 构建生产版本
-pnpm run build
+npm run build
 ```
+
+## 质量检查
+
+```bash
+npm run typecheck
+npm test
+npm audit
+```
+
+## 安全方案
+
+- 认证与管理员权限迁移方案见 [`docs/auth-admin-plan.md`](docs/auth-admin-plan.md)。
 
 ## 访问地址
 
